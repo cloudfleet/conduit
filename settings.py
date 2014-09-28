@@ -7,7 +7,7 @@ channels = {
 
 MAILPILE_DOCKER_IMAGE = "cloudfleet/blimp-mailpile"
 
-PORT_ASSIGNMENT_FILE_LOCATION = "cloudfleet/conf/port-assignments.json"
+PORT_ASSIGNMENT_FILE_LOCATION = "/opt/cloudfleet/conf/port-assignments.json"
 
 NGINX_CONFIG_DIR = "/opt/cloudfleet/conf/nginx"
 
