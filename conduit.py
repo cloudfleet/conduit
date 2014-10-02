@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, request
-import settings, traceback
+import settings, traceback, getopt, sys
 
 app = Flask(__name__)
 
@@ -16,6 +16,17 @@ def post_message(channel):
     # TODO propagate to subscribers
     return jsonify({"message": "received", "status": "success"})
 
+opts, args = getopt.getopt(sys.argv[1:], "h:", ["host="])
+
+options = dict(opts)
+
+hostname = "blimp-docker"
+
+if "-h" in options:
+    hostname = options["-h"]
+
+if "--host" in options:
+    hostname = options["--host"]
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0")
+    app.run(host=hostname)
