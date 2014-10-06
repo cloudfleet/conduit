@@ -49,8 +49,11 @@ def handle(event):
             fh.write(configuration)
 
         print "Restarting nginx \n"
-        nginx_restart_command = ['sudo', 'service', 'nginx', 'restart']
-        subprocess.call(nginx_restart_command, shell=False)
+        nginx_restart_command = 'sudo service nginx restart'
+
+        p = subprocess.Popen(nginx_restart_command, shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, close_fds=True)
+        output = p.stdout.read()
+        print output
 
     else:
         print str(event)
