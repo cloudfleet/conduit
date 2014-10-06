@@ -13,7 +13,8 @@ def handle(event):
 
         print "Creating mailpile container for user " + event.get("username")
 
-        c = docker.Client(version='1.6', timeout=10)
+        c = docker.Client()
+        c.pull(settings.MAILPILE_DOCKER_IMAGE)
 
         container_id = "mailpile-" + username
 
@@ -31,9 +32,11 @@ def handle(event):
             with open(settings.PORT_ASSIGNMENT_FILE_LOCATION, 'w') as port_assignments_file:
                 json.dump(port_assignments, port_assignments_file) #FIXME make atomic
 
-        container = c.create_container(settings.MAILPILE_DOCKER_IMAGE,
-                                       name=container_id,
+        container = c.create_container(
+            settings.MAILPILE_DOCKER_IMAGE,
+            name=container_id,
         )
+
         c.start(container, port_bindings={1111: port})
         print "Creating nginx configuration for mailpile container"
         template = settings.JINJA_ENV.get_template("user-app.conf.tpl")
