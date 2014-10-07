@@ -35,9 +35,28 @@ def handle(event):
         container = c.create_container(
             settings.MAILPILE_DOCKER_IMAGE,
             name=container_id,
+            volumes= [
+                "/.share/local/Mailpile",
+                "/opt/cloudfleet/data"
+            ]
         )
 
-        c.start(container, port_bindings={33411: port})
+        c.start(
+            container,
+            port_bindings={33411: port},
+            binds={
+                '/opt/cloudfleet/maildir/%s/' % username:
+                {
+                    'bind': "/opt/cloudfleet/data/",
+                    'ro': False
+                },
+                '/opt/cloudfleet/apps/mailpile/%s/data/' % username:
+                {
+                    'bind': "/.share/local/Mailpile/",
+                    'ro': False
+                },
+            }
+        )
         print "Creating nginx configuration for mailpile container"
         template = settings.JINJA_ENV.get_template("user-app.conf.tpl")
         configuration = template.render(path="mailpile/" + username, port=port)
