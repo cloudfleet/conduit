@@ -35,10 +35,14 @@ def handle(event):
         container = c.create_container(
             settings.MAILPILE_DOCKER_IMAGE,
             name=container_id,
-            volumes= [
+            volumes=[
                 "/.share/local/Mailpile",
                 "/opt/cloudfleet/data"
-            ]
+            ],
+            environment={
+                "CLOUDFLEET_USERNAME": username,
+                "CLOUDFLEET_PASSWORD": "password",
+            }
         )
 
         c.start(
