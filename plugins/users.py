@@ -36,7 +36,7 @@ def handle(event):
             settings.MAILPILE_DOCKER_IMAGE,
             name=container_id,
             volumes=[
-                "/.share/local/Mailpile",
+                "/.local/share/Mailpile",
                 "/opt/cloudfleet/data"
             ],
             environment={
@@ -49,14 +49,14 @@ def handle(event):
             container,
             port_bindings={33411: port},
             binds={
-                '/opt/cloudfleet/maildir/%s/' % username:
+                '/opt/cloudfleet/common/maildir/%s/' % username:
                 {
                     'bind': "/opt/cloudfleet/data/",
                     'ro': False
                 },
                 '/opt/cloudfleet/apps/mailpile/%s/data/' % username:
                 {
-                    'bind': "/root/.share/local/Mailpile/",
+                    'bind': "/root/.local/share/Mailpile/",
                     'ro': False
                 },
             }
