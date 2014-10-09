@@ -49,7 +49,7 @@ def handle(event):
             container,
             port_bindings={33411: port},
             binds={
-                '/opt/cloudfleet/common/maildir/%s/' % username:
+                '/opt/cloudfleet/common/mails/%s/' % username:
                 {
                     'bind': "/opt/cloudfleet/data/",
                     'ro': False
