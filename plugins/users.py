@@ -56,7 +56,7 @@ def handle(event):
                 },
                 '/opt/cloudfleet/apps/mailpile/%s/data/' % username:
                 {
-                    'bind': "/.share/local/Mailpile/",
+                    'bind': "/root/.share/local/Mailpile/",
                     'ro': False
                 },
             }
