@@ -1,4 +1,4 @@
-import docker, os.path, settings, json, subprocess, requests
+import docker, os.path, settings, json, subprocess, requests, time
 
 
 def handle(event):
@@ -82,6 +82,7 @@ def handle(event):
 
         session = requests.session()
 
+        time.sleep(.1)
         print "\n================"
         print "Setting up passphrase"
 
@@ -94,6 +95,7 @@ def handle(event):
 
         print r.text
 
+        time.sleep(.1)
         print "\n================ "
         print "Setting up smtp server"
 
@@ -114,6 +116,7 @@ def handle(event):
 
 
 
+        time.sleep(.1)
         print "\n================ "
         print "Setting up profile"
 
@@ -122,12 +125,27 @@ def handle(event):
             "email": "%s@%s" % (username, os.environ.get('CLOUDFLEET_DOMAIN', 'example.com')),
             "pass": "25",
             "route_id": route_id,
-            "note": "CloudFleet default route"
+            "note": "CloudFleet Default Profile"
         }
         r = session.post("http://localhost:%s/mailpile/%s/api/0/setup/profiles/" % (port, username), data=setup_profile_data)
 
         print r.text
 
+        time.sleep(.1)
+        print "\n================ "
+        print "Setting up maildir"
+
+        source_id = "5603a8l6kqog8pvi" # FIXME create random? check how mailpile does it
+
+        setup_source_data = {
+            "protocol": "maildir",
+            "discovery.paths[]": "/opt/cloudfleet/data",
+            "discovery.local_copy": "false",
+            "_section": "sources.%s" % source_id
+        }
+        r = session.post("http://localhost:%s/mailpile/%s/api/0/settings/set/" % (port, username), data=setup_source_data)
+
+        print r.text
 
 
     else:
