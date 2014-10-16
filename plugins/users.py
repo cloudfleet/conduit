@@ -37,7 +37,7 @@ def handle(event):
             settings.MAILPILE_DOCKER_IMAGE,
             name=container_id,
             volumes=[
-                "/.local/share/Mailpile",
+                "/root/.local/share/Mailpile",
                 "/opt/cloudfleet/data"
             ],
             environment={
@@ -71,21 +71,45 @@ def handle(event):
         with open(settings.NGINX_CONFIG_DIR + "/" + container_id + ".conf", "w") as fh:
             fh.write(configuration)
 
-        print "Restarting nginx \n"
+        print "================"
+        print "Restarting nginx"
         nginx_restart_command = 'sudo service nginx restart'
 
         p = subprocess.Popen(nginx_restart_command, shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, close_fds=True)
         output = p.stdout.read()
         print output
 
+
+        session = requests.session()
+
+        print "\n================"
+        print "Setting up passphrase"
+
         setup_crypto_data = {
             'passphrase': password,
             'passphrase_confirm': password,
             'choose_key': '!CREATE',
         }
-        r = requests.post("http://localhost:%s/mailpile/%s/setup/crypto/as/json" % (port, username), data=setup_crypto_data)
+        r = session.post("http://localhost:%s/mailpile/%s/setup/crypto/as/json" % (port, username), data=setup_crypto_data)
 
         print r.text
+
+        print "\n================ "
+        print "Setting up smtp server"
+
+        setup_profile_data = {
+            "name": "CloudFleet Route",
+            "username": "",
+            "password": "",
+            "host": "blimp-docker",
+            "port": "25",
+            "protocol": "smtp",
+            "_section": "routes.5603a8l6kqog8pvi"
+        }
+        r = session.post("http://localhost:%s/mailpile/%s/api/0/settings/set/" % (port, username), data=setup_profile_data)
+
+        print r.text
+
 
 
 
