@@ -97,19 +97,36 @@ def handle(event):
         print "\n================ "
         print "Setting up smtp server"
 
-        setup_profile_data = {
+        route_id = "5603a8l6kqog8pvi" # FIXME create random? check how mailpile does it
+
+        setup_route_data = {
             "name": "CloudFleet Route",
             "username": "",
             "password": "",
             "host": "blimp-docker",
             "port": "25",
             "protocol": "smtp",
-            "_section": "routes.5603a8l6kqog8pvi"
+            "_section": "routes.%s" % route_id
         }
-        r = session.post("http://localhost:%s/mailpile/%s/api/0/settings/set/" % (port, username), data=setup_profile_data)
+        r = session.post("http://localhost:%s/mailpile/%s/api/0/settings/set/" % (port, username), data=setup_route_data)
 
         print r.text
 
+
+
+        print "\n================ "
+        print "Setting up profile"
+
+        setup_profile_data = {
+            "name": username,
+            "email": "%s@%s" % (username, os.environ.get('CLOUDFLEET_DOMAIN', 'example.com')),
+            "pass": "25",
+            "route_id": route_id,
+            "note": "CloudFleet default route"
+        }
+        r = session.post("http://localhost:%s/mailpile/%s/api/0/setup/profiles/" % (port, username), data=setup_profile_data)
+
+        print r.text
 
 
 
