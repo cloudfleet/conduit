@@ -1,10 +1,11 @@
-import docker, os.path, settings, json, subprocess
+import docker, os.path, settings, json, subprocess, requests
 
 
 def handle(event):
     if event.get('action') == 'create' and event.get('username'):
 
         username = event.get('username')
+        password = event.get('password')
 
         if os.path.isfile(settings.PORT_ASSIGNMENT_FILE_LOCATION):
             port_assignments = json.load(open(settings.PORT_ASSIGNMENT_FILE_LOCATION))
@@ -41,7 +42,6 @@ def handle(event):
             ],
             environment={
                 "CLOUDFLEET_USERNAME": username,
-                "CLOUDFLEET_PASSWORD": "password",
             }
         )
 
@@ -77,6 +77,17 @@ def handle(event):
         p = subprocess.Popen(nginx_restart_command, shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, close_fds=True)
         output = p.stdout.read()
         print output
+
+        setup_crypto_data = {
+            'passphrase': password,
+            'passphrase_confirm': password,
+            'choose_key': '!CREATE',
+        }
+        r = requests.post("http://localhost:%s/mailpile/%s/setup/crypto/as/json" % (port, username), data=setup_crypto_data)
+
+        print r.text
+
+
 
     else:
         print str(event)
