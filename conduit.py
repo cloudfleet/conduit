@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, request
-import settings, traceback, getopt, sys
+import settings, traceback, getopt, sys, os
 
 app = Flask(__name__)
 
@@ -29,4 +29,6 @@ if "--host" in options:
     hostname = options["--host"]
 
 if __name__ == '__main__':
+    print os.environ
     app.run(host=hostname)
+

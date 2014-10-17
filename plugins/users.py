@@ -6,6 +6,7 @@ def handle(event):
 
         username = event.get('username')
         password = event.get('password')
+        domain = event.get('domain')
 
         if os.path.isfile(settings.PORT_ASSIGNMENT_FILE_LOCATION):
             port_assignments = json.load(open(settings.PORT_ASSIGNMENT_FILE_LOCATION))
@@ -122,7 +123,7 @@ def handle(event):
 
         setup_profile_data = {
             "name": username,
-            "email": "%s@%s" % (username, os.environ.get('CLOUDFLEET_DOMAIN', 'example.com')),
+            "email": "%s@%s" % (username, domain),
             "pass": "25",
             "route_id": route_id,
             "note": "CloudFleet Default Profile"
