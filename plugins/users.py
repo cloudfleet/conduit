@@ -61,6 +61,11 @@ def handle(event):
                     'bind': "/root/.local/share/Mailpile/",
                     'ro': False
                 },
+                '/etc/hosts':
+                {
+                    'bind': "/etc/hosts",
+                    'ro': True
+                },
             }
         )
         print "Creating nginx configuration for mailpile container"
