@@ -82,7 +82,7 @@ def handle(event):
         print output
 
 
-        #return
+        return
 
         session = requests.session()
 
