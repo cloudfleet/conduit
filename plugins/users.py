@@ -39,7 +39,8 @@ def handle(event):
             name=container_id,
             volumes=[
                 "/root/.local/share/Mailpile",
-                "/opt/cloudfleet/data"
+                "/opt/cloudfleet/data",
+                "/etc/hosts"
             ],
             environment={
                 "CLOUDFLEET_USERNAME": username,
@@ -81,7 +82,7 @@ def handle(event):
         print output
 
 
-        return
+        #return
 
         session = requests.session()
 
