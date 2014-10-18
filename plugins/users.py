@@ -81,6 +81,8 @@ def handle(event):
         print output
 
 
+        return
+
         session = requests.session()
 
         time.sleep(.1)
