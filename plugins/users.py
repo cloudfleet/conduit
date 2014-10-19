@@ -1,4 +1,71 @@
 import docker, os.path, settings, json, subprocess, requests, time
+import random
+
+
+def create_random_id():
+    number = random.randint(2**63, 2**64)
+
+    alphabet = '0123456789abcdefghijklmnopqrstuvwxyz'
+
+    base36 = ''
+    while number:
+        number, i = divmod(number, 36)
+        base36 = alphabet[i] + base36
+
+    return base36 or alphabet[0]
+
+
+def setup_mailpile(domain, password, port, session, username):
+    time.sleep(.1)
+    print "\n================"
+    print "Setting up passphrase"
+    setup_crypto_data = {
+        'passphrase': password,
+        'passphrase_confirm': password,
+        'choose_key': '!CREATE',
+    }
+    r = session.post("http://localhost:%s/mailpile/%s/setup/crypto/as/json" % (port, username), data=setup_crypto_data)
+    print r.text
+    time.sleep(.1)
+    print "\n================ "
+    print "Setting up smtp server"
+    route_id = create_random_id()
+    setup_route_data = {
+        "name": "CloudFleet Route",
+        "username": "",
+        "password": "",
+        "host": "blimp-docker",
+        "port": "25",
+        "protocol": "smtp",
+        "_section": "routes.%s" % route_id
+    }
+    r = session.post("http://localhost:%s/mailpile/%s/api/0/settings/set/" % (port, username), data=setup_route_data)
+    print r.text
+    time.sleep(.1)
+    print "\n================ "
+    print "Setting up profile"
+    setup_profile_data = {
+        "name": username,
+        "email": "%s@%s" % (username, domain),
+        "pass": "25",
+        "route_id": route_id,
+        "note": "CloudFleet Default Profile"
+    }
+    r = session.post("http://localhost:%s/mailpile/%s/api/0/setup/profiles/" % (port, username),
+                     data=setup_profile_data)
+    print r.text
+    time.sleep(.1)
+    print "\n================ "
+    print "Setting up maildir"
+    source_id = create_random_id()
+    setup_source_data = {
+        "protocol": "maildir",
+        "discovery.paths[]": "/opt/cloudfleet/data",
+        "discovery.local_copy": "false",
+        "_section": "sources.%s" % source_id
+    }
+    r = session.post("http://localhost:%s/mailpile/%s/api/0/settings/set/" % (port, username), data=setup_source_data)
+    print r.text
 
 
 def handle(event):
@@ -87,74 +154,11 @@ def handle(event):
         print output
 
 
-        return
+        #return
 
         session = requests.session()
 
-        time.sleep(.1)
-        print "\n================"
-        print "Setting up passphrase"
-
-        setup_crypto_data = {
-            'passphrase': password,
-            'passphrase_confirm': password,
-            'choose_key': '!CREATE',
-        }
-        r = session.post("http://localhost:%s/mailpile/%s/setup/crypto/as/json" % (port, username), data=setup_crypto_data)
-
-        print r.text
-
-        time.sleep(.1)
-        print "\n================ "
-        print "Setting up smtp server"
-
-        route_id = "5603a8l6kqog8pvi" # FIXME create random? check how mailpile does it
-
-        setup_route_data = {
-            "name": "CloudFleet Route",
-            "username": "",
-            "password": "",
-            "host": "blimp-docker",
-            "port": "25",
-            "protocol": "smtp",
-            "_section": "routes.%s" % route_id
-        }
-        r = session.post("http://localhost:%s/mailpile/%s/api/0/settings/set/" % (port, username), data=setup_route_data)
-
-        print r.text
-
-
-
-        time.sleep(.1)
-        print "\n================ "
-        print "Setting up profile"
-
-        setup_profile_data = {
-            "name": username,
-            "email": "%s@%s" % (username, domain),
-            "pass": "25",
-            "route_id": route_id,
-            "note": "CloudFleet Default Profile"
-        }
-        r = session.post("http://localhost:%s/mailpile/%s/api/0/setup/profiles/" % (port, username), data=setup_profile_data)
-
-        print r.text
-
-        time.sleep(.1)
-        print "\n================ "
-        print "Setting up maildir"
-
-        source_id = "5603a8l6kqog8pvi" # FIXME create random? check how mailpile does it
-
-        setup_source_data = {
-            "protocol": "maildir",
-            "discovery.paths[]": "/opt/cloudfleet/data",
-            "discovery.local_copy": "false",
-            "_section": "sources.%s" % source_id
-        }
-        r = session.post("http://localhost:%s/mailpile/%s/api/0/settings/set/" % (port, username), data=setup_source_data)
-
-        print r.text
+        setup_mailpile(domain, password, port, session, username)
 
 
     else:
