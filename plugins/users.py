@@ -88,7 +88,7 @@ def setup_mailpile(domain, password, port, username):
         "mailbox.0001.policy": "read",
         "_section": "sources.%s" % source_id
     }
-    r = session.post("http://localhost:%s/mailpile/%s/api/0/settings/set/" % (port, username), data=setup_source_data)
+    r = session.post("http://localhost:%s/mailpile/%s/api/0/settings/set/" % (port, username), data=setup_mailbox_data)
     print r.text
 
 
