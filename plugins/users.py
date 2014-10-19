@@ -22,6 +22,15 @@ def setup_mailpile(domain, password, port, username):
 
     time.sleep(.1)
     print "\n================"
+    print "Setting up language"
+    setup_lang_data = {
+        'language': 'en_US',
+        'advance': True,
+    }
+    r = session.post("http://localhost:%s/mailpile/%s/setup/welcome/" % (port, username), data=setup_lang_data, allow_redirects=False)
+    print r.text
+    time.sleep(.1)
+    print "\n================"
     print "Setting up passphrase"
     setup_crypto_data = {
         'passphrase': password,
@@ -70,6 +79,17 @@ def setup_mailpile(domain, password, port, username):
     }
     r = session.post("http://localhost:%s/mailpile/%s/api/0/settings/set/" % (port, username), data=setup_source_data)
     print r.text
+    time.sleep(.1)
+    print "\n================ "
+    print "Setting up mailbox"
+    setup_mailbox_data = {
+        "mailbox.0001.primary_tag": "cloudfleet",
+        "mailbox.0001.apply_tags[]": "c",
+        "mailbox.0001.policy": "read",
+        "_section": "sources.%s" % source_id
+    }
+    r = session.post("http://localhost:%s/mailpile/%s/api/0/settings/set/" % (port, username), data=setup_source_data)
+    print r.text
 
 
 def handle(event):
@@ -83,6 +103,14 @@ def handle(event):
             port_assignments = json.load(open(settings.PORT_ASSIGNMENT_FILE_LOCATION))
         else:
             port_assignments = {}
+
+
+        directory = "/opt/cloudfleet/common/mails/%s/" % username
+        for subdir in ["cur", "tmp", "new"]:
+            subdir_path = "%s/%s" % (directory, subdir)
+            if not os.path.exists(subdir_path):
+                os.makedirs(subdir_path)
+
 
         print "Creating mailpile container for user " + event.get("username")
 
