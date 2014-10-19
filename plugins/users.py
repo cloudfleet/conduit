@@ -15,7 +15,11 @@ def create_random_id():
     return base36 or alphabet[0]
 
 
-def setup_mailpile(domain, password, port, session, username):
+def setup_mailpile(domain, password, port, username):
+
+    session = requests.session()
+
+
     time.sleep(.1)
     print "\n================"
     print "Setting up passphrase"
@@ -156,9 +160,8 @@ def handle(event):
 
         #return
 
-        session = requests.session()
 
-        setup_mailpile(domain, password, port, session, username)
+        setup_mailpile(domain, password, port,username)
 
 
     else:
