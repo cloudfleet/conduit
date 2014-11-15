@@ -79,6 +79,15 @@ def setup_mailpile(domain, password, port, username):
     }
     r = session.post("http://localhost:%s/mailpile/%s/api/0/settings/set/" % (port, username), data=setup_source_data)
     print r.text
+
+    time.sleep(.1)
+    r = session.get("http://loclhost:%s/mailpile/%s/tags/as.json")
+
+    print r.text
+
+    tags_dict = r.json
+
+
     time.sleep(.1)
     print "\n================ "
     print "Setting up mailbox"
@@ -137,8 +146,8 @@ def handle(event):
             settings.MAILPILE_DOCKER_IMAGE,
             name=container_id,
             volumes=[
-                "/root/.local/share/Mailpile",
-                "/opt/cloudfleet/Mails",
+                "/root/.local/share/Mailpile/",
+                "/opt/cloudfleet/Mails/",
                 "/etc/hosts"
             ],
             environment={
