@@ -73,7 +73,7 @@ def setup_mailpile(domain, password, port, username):
     source_id = create_random_id()
     setup_source_data = {
         "protocol": "maildir",
-        "discovery.paths[]": "/opt/cloudfleet/data",
+        "discovery.paths[]": "/opt/cloudfleet/Mails",
         "discovery.local_copy": "false",
         "_section": "sources.%s" % source_id
     }
@@ -138,7 +138,7 @@ def handle(event):
             name=container_id,
             volumes=[
                 "/root/.local/share/Mailpile",
-                "/opt/cloudfleet/data",
+                "/opt/cloudfleet/Mails",
                 "/etc/hosts"
             ],
             environment={
@@ -152,7 +152,7 @@ def handle(event):
             binds={
                 '/opt/cloudfleet/common/mails/%s/' % username:
                 {
-                    'bind': "/opt/cloudfleet/data/",
+                    'bind': "/opt/cloudfleet/Mails/",
                     'ro': False
                 },
                 '/opt/cloudfleet/apps/mailpile/%s/data/' % username:
