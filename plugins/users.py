@@ -81,7 +81,7 @@ def setup_mailpile(domain, password, port, username):
     print r.text
 
     time.sleep(.1)
-    r = session.get("http://loclhost:%s/mailpile/%s/tags/as.json")
+    r = session.get("http://localhost:%s/mailpile/%s/tags/as.json")
 
     print r.text
 
@@ -120,6 +120,12 @@ def handle(event):
             if not os.path.exists(subdir_path):
                 os.makedirs(subdir_path)
 
+        for box in [".inbox", ".drafts", ".spam", ".sent"]:
+            box_directory = "/opt/cloudfleet/common/mails/%s/%s/" % (username, box)
+            for subdir in ["cur", "tmp", "new"]:
+                subdir_path = "%s/%s" % (box_directory, subdir)
+                if not os.path.exists(subdir_path):
+                    os.makedirs(subdir_path)
 
         print "Creating mailpile container for user " + event.get("username")
 
