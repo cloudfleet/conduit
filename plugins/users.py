@@ -68,17 +68,11 @@ def setup_mailpile(domain, password, port, username):
                      data=setup_profile_data)
     print r.text
     time.sleep(.1)
+
+
     print "\n================ "
-    print "Setting up maildir"
-    source_id = create_random_id()
-    setup_source_data = {
-        "protocol": "maildir",
-        "discovery.paths[]": "/opt/cloudfleet/Mails",
-        "discovery.local_copy": "false",
-        "_section": "sources.%s" % source_id
-    }
-    r = session.post("http://localhost:%s/mailpile/%s/api/0/settings/set/" % (port, username), data=setup_source_data)
-    print r.text
+    print "Getting Tags"
+
 
     time.sleep(.1)
     r = session.get("http://localhost:%s/mailpile/%s/tags/as.json")
@@ -88,17 +82,21 @@ def setup_mailpile(domain, password, port, username):
     tags_dict = r.json
 
 
-    time.sleep(.1)
+
     print "\n================ "
-    print "Setting up mailbox"
-    setup_mailbox_data = {
-        "mailbox.0001.primary_tag": "cloudfleet",
-        "mailbox.0001.apply_tags[]": "c",
-        "mailbox.0001.policy": "read",
+    print "Setting up maildir"
+    source_id = create_random_id()
+    setup_source_data = {
+        "protocol": "maildir",
+        "discovery.paths[]": "/opt/cloudfleet/Mails",
+        "discovery.local_copy": "false",
+        "discovery.policy": "read",
         "_section": "sources.%s" % source_id
     }
-    r = session.post("http://localhost:%s/mailpile/%s/api/0/settings/set/" % (port, username), data=setup_mailbox_data)
+    r = session.post("http://localhost:%s/mailpile/%s/api/0/settings/set/" % (port, username), data=setup_source_data)
     print r.text
+
+
 
 
 def handle(event):
@@ -119,13 +117,6 @@ def handle(event):
             subdir_path = "%s/%s" % (directory, subdir)
             if not os.path.exists(subdir_path):
                 os.makedirs(subdir_path)
-
-        for box in [".inbox", ".drafts", ".spam", ".sent"]:
-            box_directory = "/opt/cloudfleet/common/mails/%s/%s/" % (username, box)
-            for subdir in ["cur", "tmp", "new"]:
-                subdir_path = "%s/%s" % (box_directory, subdir)
-                if not os.path.exists(subdir_path):
-                    os.makedirs(subdir_path)
 
         print "Creating mailpile container for user " + event.get("username")
 
