@@ -75,7 +75,7 @@ def setup_mailpile(domain, password, port, username):
 
 
     time.sleep(.1)
-    r = session.get("http://localhost:%s/mailpile/%s/tags/as.json")
+    r = session.get("http://localhost:%s/mailpile/%s/tags/as.json" % (port, username))
 
     print r.text
 
