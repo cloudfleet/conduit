@@ -81,7 +81,9 @@ def setup_mailpile(domain, password, port, username):
 
     tags_dict = r.json
 
-    inbox_tag_id = [tag for tag in tags_dict["result"] if tag["type"] == "inbox"][0]["tid"]
+
+    single_tasks_list = [tag for tag in tags_dict["result"] if tag["type"] == "inbox"]
+    inbox_tag_id = single_tasks_list[0]["tid"]
 
     print "\n================ "
     print "Setting up maildir"
