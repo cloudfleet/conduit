@@ -67,7 +67,7 @@ def setup_mailpile(domain, password, port, username):
     r = session.post("http://localhost:%s/mailpile/%s/api/0/setup/profiles/" % (port, username),
                      data=setup_profile_data)
     print r.text
-    time.sleep(.1)
+    time.sleep(1.1)
 
 
     print "\n================ "
@@ -81,7 +81,7 @@ def setup_mailpile(domain, password, port, username):
 
     tags_dict = r.json
 
-    inbox_tag_id = [tag for tag in tags["dict"]["result"] if tag["type"] == "inbox"][0]["tid"]
+    inbox_tag_id = [tag for tag in tags_dict["result"] if tag["type"] == "inbox"][0]["tid"]
 
     print "\n================ "
     print "Setting up maildir"
