@@ -96,6 +96,13 @@ def setup_mailpile(domain, password, port, username):
     r = session.post("http://localhost:%s/mailpile/%s/api/0/settings/set/" % (port, username), data=setup_source_data)
     print r.text
 
+    print "\n================ "
+    print "Completing setup"
+    complete_setup_data = {
+        "web.setup_complete": True,
+    }
+    r = session.post("http://localhost:%s/mailpile/%s/api/0/settings/set/" % (port, username), data=complete_setup_data)
+    print r.text
 
 
 
