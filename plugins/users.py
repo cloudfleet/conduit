@@ -81,7 +81,7 @@ def setup_mailpile(domain, password, port, username):
 
     tags_dict = r.json
 
-
+    inbox_tag_id = [tag for tag in tags["dict"]["result"] if tag["type"] = "inbox"][0]["tid"]
 
     print "\n================ "
     print "Setting up maildir"
@@ -91,6 +91,7 @@ def setup_mailpile(domain, password, port, username):
         "discovery.paths[]": "/opt/cloudfleet/Mails",
         "discovery.local_copy": "false",
         "discovery.policy": "read",
+        "discovery.apply_tags": [inbox_tag_id],
         "_section": "sources.%s" % source_id
     }
     r = session.post("http://localhost:%s/mailpile/%s/api/0/settings/set/" % (port, username), data=setup_source_data)
