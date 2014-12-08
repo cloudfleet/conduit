@@ -79,7 +79,7 @@ def setup_mailpile(domain, password, port, username):
 
     print r.text
 
-    tags_dict = r.json
+    tags_dict = r.json()
 
     print tags_dict
 
