@@ -20,7 +20,7 @@ def setup_mailpile(domain, password, port, username):
     session = requests.session()
 
 
-    time.sleep(.1)
+    time.sleep(10.1)
     print "\n================"
     print "Setting up language"
     setup_lang_data = {
@@ -132,7 +132,7 @@ def handle(event):
         print "Creating mailpile container for user " + event.get("username")
 
         c = docker.Client()
-        c.pull(settings.MAILPILE_DOCKER_IMAGE)
+        #c.pull(settings.MAILPILE_DOCKER_IMAGE)
 
         container_id = "mailpile-" + username
 
