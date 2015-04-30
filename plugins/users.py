@@ -118,9 +118,9 @@ def handle(event):
         domain = event.get('domain')
 
         if os.path.isfile(settings.PORT_ASSIGNMENT_FILE_LOCATION):
-            port_assignments = json.load(open(settings.PORT_ASSIGNMENT_FILE_LOCATION))
+            port_assignments = json.load(open(settings.PORT_ASSIGNMENT_FILE_LOCATION))["ports"]
         else:
-            port_assignments = {}
+            port_assignments = {"ports": {}}
 
 
         directory = "/opt/cloudfleet/common/mails/%s/" % username
@@ -148,7 +148,7 @@ def handle(event):
             if not os.path.exists(os.path.dirname(settings.PORT_ASSIGNMENT_FILE_LOCATION)):
                 os.makedirs(os.path.dirname(settings.PORT_ASSIGNMENT_FILE_LOCATION))
             with open(settings.PORT_ASSIGNMENT_FILE_LOCATION, 'w') as port_assignments_file:
-                json.dump(port_assignments, port_assignments_file) #FIXME make atomic
+                json.dump({"ports": port_assignments}, port_assignments_file) #FIXME make atomic
 
         container = c.create_container(
             settings.MAILPILE_DOCKER_IMAGE,
