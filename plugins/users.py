@@ -154,6 +154,7 @@ def handle(event):
             settings.MAILPILE_DOCKER_IMAGE,
             name=container_id,
             volumes=[
+                "/root/.gnupg/",
                 "/root/.local/share/Mailpile/",
                 "/opt/cloudfleet/Mails/",
                 "/etc/hosts"
@@ -167,14 +168,19 @@ def handle(event):
             container,
             port_bindings={33411: port},
             binds={
-                '/opt/cloudfleet/common/mails/%s/' % username:
+                '/opt/cloudfleet/common/gnupg/%s/' % username:
                 {
-                    'bind': "/opt/cloudfleet/Mails/",
+                    'bind': "/root/.gnupg/",
                     'ro': False
                 },
                 '/opt/cloudfleet/apps/mailpile/%s/data/' % username:
                 {
                     'bind': "/root/.local/share/Mailpile/",
+                    'ro': False
+                },
+                '/opt/cloudfleet/common/mails/%s/' % username:
+                {
+                    'bind': "/opt/cloudfleet/Mails/",
                     'ro': False
                 },
                 '/etc/hosts':
