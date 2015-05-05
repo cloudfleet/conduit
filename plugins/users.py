@@ -154,9 +154,9 @@ def handle(event):
             settings.MAILPILE_DOCKER_IMAGE,
             name=container_id,
             volumes=[
-                "/root/.gnupg/",
-                "/root/.local/share/Mailpile/",
-                "/opt/cloudfleet/Mails/",
+                "/root/.gnupg",
+                "/root/.local/share/Mailpile",
+                "/opt/cloudfleet/Mails",
                 "/etc/hosts"
             ],
             environment={
@@ -170,24 +170,19 @@ def handle(event):
             binds={
                 '/opt/cloudfleet/common/gnupg/%s/' % username:
                 {
-                    'bind': "/root/.gnupg/",
+                    'bind': "/root/.gnupg",
                     'ro': False
                 },
                 '/opt/cloudfleet/apps/mailpile/%s/data/' % username:
                 {
-                    'bind': "/root/.local/share/Mailpile/",
+                    'bind': "/root/.local/share/Mailpile",
                     'ro': False
                 },
                 '/opt/cloudfleet/common/mails/%s/' % username:
                 {
-                    'bind': "/opt/cloudfleet/Mails/",
+                    'bind': "/opt/cloudfleet/Mails",
                     'ro': False
-                },
-                '/etc/hosts':
-                {
-                    'bind': "/etc/hosts",
-                    'ro': True
-                },
+                }
             }
         )
         print "Creating nginx configuration for mailpile container"
