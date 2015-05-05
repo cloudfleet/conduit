@@ -16,19 +16,6 @@ def post_message(channel):
     # TODO propagate to subscribers
     return jsonify({"message": "received", "status": "success"})
 
-opts, args = getopt.getopt(sys.argv[1:], "h:", ["host="])
-
-options = dict(opts)
-
-hostname = "blimp-docker"
-
-if "-h" in options:
-    hostname = options["-h"]
-
-if "--host" in options:
-    hostname = options["--host"]
-
 if __name__ == '__main__':
     print os.environ
-    app.run(host=hostname)
-
+    app.run()
