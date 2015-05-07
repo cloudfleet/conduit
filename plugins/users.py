@@ -15,7 +15,7 @@ def create_random_id():
     return base36 or alphabet[0]
 
 
-def setup_mailpile(domain, password, port, username):
+def setup_mailpile(domain, password, host, port, username):
 
     session = requests.session()
 
@@ -27,7 +27,7 @@ def setup_mailpile(domain, password, port, username):
         'language': 'en_US',
         'advance': True,
     }
-    r = session.post("http://localhost:%s/mailpile/%s/setup/welcome/" % (port, username), data=setup_lang_data, allow_redirects=False)
+    r = session.post("http://%s:%s/mailpile/%s/setup/welcome/" % (host, port, username), data=setup_lang_data, allow_redirects=False)
     print r.text
     time.sleep(.1)
     print "\n================"
@@ -37,7 +37,7 @@ def setup_mailpile(domain, password, port, username):
         'passphrase_confirm': password,
         'choose_key': '!CREATE',
     }
-    r = session.post("http://localhost:%s/mailpile/%s/setup/crypto/as/json" % (port, username), data=setup_crypto_data)
+    r = session.post("http://%s:%s/mailpile/%s/setup/crypto/as/json" % (host, port, username), data=setup_crypto_data)
     print r.text
     time.sleep(.1)
     print "\n================ "
@@ -52,7 +52,7 @@ def setup_mailpile(domain, password, port, username):
         "protocol": "smtp",
         "_section": "routes.%s" % route_id
     }
-    r = session.post("http://localhost:%s/mailpile/%s/api/0/settings/set/" % (port, username), data=setup_route_data)
+    r = session.post("http://%s:%s/mailpile/%s/api/0/settings/set/" % (host, port, username), data=setup_route_data)
     print r.text
     time.sleep(.1)
     print "\n================ "
@@ -64,7 +64,7 @@ def setup_mailpile(domain, password, port, username):
         "route_id": route_id,
         "note": "CloudFleet Default Profile"
     }
-    r = session.post("http://localhost:%s/mailpile/%s/api/0/setup/profiles/" % (port, username),
+    r = session.post("http://%s:%s/mailpile/%s/api/0/setup/profiles/" % (host, port, username),
                      data=setup_profile_data)
     print r.text
     time.sleep(1.1)
@@ -75,7 +75,7 @@ def setup_mailpile(domain, password, port, username):
 
 
     time.sleep(.1)
-    r = session.get("http://localhost:%s/mailpile/%s/tags/as.json" % (port, username))
+    r = session.get("http://%s:%s/mailpile/%s/tags/as.json" % (host, port, username))
 
     print r.text
 
@@ -97,7 +97,7 @@ def setup_mailpile(domain, password, port, username):
         "discovery.apply_tags": [inbox_tag_id],
         "_section": "sources.%s" % source_id
     }
-    r = session.post("http://localhost:%s/mailpile/%s/api/0/settings/set/" % (port, username), data=setup_source_data)
+    r = session.post("http://%s:%s/mailpile/%s/api/0/settings/set/" % (host, port, username), data=setup_source_data)
     print r.text
 
     print "\n================ "
@@ -105,7 +105,7 @@ def setup_mailpile(domain, password, port, username):
     complete_setup_data = {
         "web.setup_complete": True,
     }
-    r = session.post("http://localhost:%s/mailpile/%s/api/0/settings/set/" % (port, username), data=complete_setup_data)
+    r = session.post("http://%s:%s/mailpile/%s/api/0/settings/set/" % (host, port, username), data=complete_setup_data)
     print r.text
 
 
@@ -205,8 +205,8 @@ def handle(event):
 
         #return
 
-
-        setup_mailpile(domain, password, port,username)
+        host = c.inspect_container(container_id)["NetworkSettings"]["IPAddress"]
+        setup_mailpile(domain, password, host, 33411, username)
 
 
     else:
