@@ -120,7 +120,7 @@ def handle(event):
         if os.path.isfile(settings.PORT_ASSIGNMENT_FILE_LOCATION):
             port_assignments = json.load(open(settings.PORT_ASSIGNMENT_FILE_LOCATION))["ports"]
         else:
-            port_assignments = {"ports": {}}
+            port_assignments = {}
 
 
         directory = "/opt/cloudfleet/common/mails/%s/" % username
