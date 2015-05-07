@@ -157,7 +157,6 @@ def handle(event):
                 "/root/.gnupg",
                 "/root/.local/share/Mailpile",
                 "/opt/cloudfleet/Mails",
-                "/etc/hosts"
             ],
             environment={
                 "CLOUDFLEET_USERNAME": username,
