@@ -1,11 +1,12 @@
 import plugins.users
+import os
 from jinja2 import Environment, PackageLoader
 
 channels = {
     "users": [plugins.users.handle]
 }
 
-MAILPILE_DOCKER_IMAGE = "cloudfleet/blimp-mailpile"
+MAILPILE_DOCKER_IMAGE = os.environ['CLOUDFLEET_REGISTRY'] + "/cloudfleet/blimp-mailpile"
 
 PORT_ASSIGNMENT_FILE_LOCATION = "/opt/cloudfleet/conf/port-assignments.json"
 
