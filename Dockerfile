@@ -1,6 +1,6 @@
 FROM debian:jessie
 
-RUN echo "deb http://ftp.de.debian.org/debian experimental main" >> /etc/apt/sources.list
+RUN echo "deb http://ftp.de.debian.org/debian sid main contrib non-free" >> /etc/apt/sources.list
 
 RUN apt-get update -y
 RUN apt-get install -y python-pip docker.io
