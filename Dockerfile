@@ -1,12 +1,11 @@
 FROM debian:jessie
 
-RUN echo "deb http://ftp.de.debian.org/debian sid main contrib non-free" >> /etc/apt/sources.list
-
-RUN apt-get update -y
-RUN apt-get install -y python-pip docker.io
-
 ADD . /opt/conduit
 WORKDIR /opt/conduit
+
+RUN ./scripts/install_docker.sh
+
+RUN apt-get install -y python-pip
 
 RUN pip install -r requirements.txt
 
