@@ -47,8 +47,8 @@ def setup_mailpile(domain, password, host, port, username):
         "name": "CloudFleet Route",
         "username": "",
         "password": "",
-        "host": "blimp-docker",
-        "port": "25",
+        "host": "doveshed",
+        "port": "1025",
         "protocol": "smtp",
         "_section": "routes.%s" % route_id
     }
@@ -60,7 +60,7 @@ def setup_mailpile(domain, password, host, port, username):
     setup_profile_data = {
         "name": username,
         "email": "%s@%s" % (username, domain),
-        "pass": "25",
+        "pass": "25", # TODO check what this is for
         "route_id": route_id,
         "note": "CloudFleet Default Profile"
     }
