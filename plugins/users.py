@@ -1,5 +1,6 @@
-import docker, os.path, settings, json, subprocess, requests, time
+import os.path, settings, json, subprocess, requests, time
 import random
+from subprocess import call
 
 
 def create_random_id():
@@ -116,93 +117,10 @@ def handle(event):
         username = event.get('username')
         password = event.get('password')
         domain = event.get('domain')
+        
+        call(['/opt/cloudfleet/engineroom/upgrade-containers.sh'])
 
-        if os.path.isfile(settings.PORT_ASSIGNMENT_FILE_LOCATION):
-            port_assignments = json.load(open(settings.PORT_ASSIGNMENT_FILE_LOCATION))["ports"]
-        else:
-            port_assignments = {}
-
-
-        directory = "/opt/cloudfleet/common/mails/%s/" % username
-        for subdir in ["cur", "tmp", "new"]:
-            subdir_path = "%s/%s" % (directory, subdir)
-            if not os.path.exists(subdir_path):
-                os.makedirs(subdir_path)
-
-        print "Creating mailpile container for user " + event.get("username")
-
-        c = docker.Client()
-        #c.pull(settings.MAILPILE_DOCKER_IMAGE)
-
-        container_id = "mailpile-" + username
-
-        if container_id in port_assignments:
-            port = port_assignments.get(container_id)
-        else:
-            if len(port_assignments):
-                port = sorted(port_assignments.values(), reverse=True)[0] + 1
-            else:
-                port = 20001
-
-            port_assignments[container_id] = port
-            if not os.path.exists(os.path.dirname(settings.PORT_ASSIGNMENT_FILE_LOCATION)):
-                os.makedirs(os.path.dirname(settings.PORT_ASSIGNMENT_FILE_LOCATION))
-            with open(settings.PORT_ASSIGNMENT_FILE_LOCATION, 'w') as port_assignments_file:
-                json.dump({"ports": port_assignments}, port_assignments_file) #FIXME make atomic
-
-        container = c.create_container(
-            settings.MAILPILE_DOCKER_IMAGE,
-            name=container_id,
-            volumes=[
-                "/root/.gnupg",
-                "/root/.local/share/Mailpile",
-                "/opt/cloudfleet/Mails",
-            ],
-            environment={
-                "CLOUDFLEET_USERNAME": username,
-            }
-        )
-
-        c.start(
-            container,
-            port_bindings={33411: port},
-            binds={
-                '/opt/cloudfleet/common/gnupg/%s/' % username:
-                {
-                    'bind': "/root/.gnupg",
-                    'ro': False
-                },
-                '/opt/cloudfleet/apps/mailpile/%s/data/' % username:
-                {
-                    'bind': "/root/.local/share/Mailpile",
-                    'ro': False
-                },
-                '/opt/cloudfleet/common/mails/%s/' % username:
-                {
-                    'bind': "/opt/cloudfleet/Mails",
-                    'ro': False
-                }
-            }
-        )
-        print "Creating nginx configuration for mailpile container"
-        template = settings.JINJA_ENV.get_template("user-app.conf.tpl")
-        configuration = template.render(path="mailpile/" + username, port=port)
-
-        if not os.path.exists(settings.NGINX_CONFIG_DIR):
-            os.makedirs(settings.NGINX_CONFIG_DIR)
-
-        with open(settings.NGINX_CONFIG_DIR + "/" + container_id + ".conf", "w") as fh:
-            fh.write(configuration)
-
-        print "================"
-        print "Restarting nginx"
-
-        c.restart("nginx")
-
-        #return
-
-        host = c.inspect_container(container_id)["NetworkSettings"]["IPAddress"]
-        setup_mailpile(domain, password, host, 33411, username)
+        setup_mailpile(domain, password, "blimp." + domain, 443, username)
 
 
     else:
