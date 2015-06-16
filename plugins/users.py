@@ -20,6 +20,9 @@ def setup_mailpile(domain, password, host, username):
 
     session = requests.session()
 
+    print "\n=================================================================="
+    print "Setting up mailpile on %s for %s " % (host, username)
+
 
     time.sleep(10.1)
     print "\n================"
