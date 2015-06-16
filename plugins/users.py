@@ -118,7 +118,7 @@ def handle(event):
         password = event.get('password')
         domain = event.get('domain')
 
-        call(['/opt/cloudfleet/engineroom/bin/upgrade-containers.sh'])
+        call(['/opt/cloudfleet/engineroom/bin/start-missing-user-containers.sh'])
 
         setup_mailpile(domain, password, "blimp." + domain, username)
 
