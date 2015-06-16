@@ -117,8 +117,8 @@ def handle(event):
         username = event.get('username')
         password = event.get('password')
         domain = event.get('domain')
-        
-        call(['/opt/cloudfleet/engineroom/upgrade-containers.sh'])
+
+        call(['/opt/cloudfleet/engineroom/bin/upgrade-containers.sh'])
 
         setup_mailpile(domain, password, "blimp." + domain, 443, username)
 
