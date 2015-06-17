@@ -1,13 +1,14 @@
 FROM debian:jessie
 
+RUN ./scripts/install_docker.sh
+RUN apt-get install -y python-pip
+
+ADD requirements.txt /opt/conduit/requirements.txt
+RUN pip install -r requirements.txt
+
 ADD . /opt/conduit
 WORKDIR /opt/conduit
 
-RUN ./scripts/install_docker.sh
-
-RUN apt-get install -y python-pip
-
-RUN pip install -r requirements.txt
 
 CMD /usr/bin/python -u conduit.py
 
