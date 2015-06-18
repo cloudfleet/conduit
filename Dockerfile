@@ -1,7 +1,7 @@
 FROM debian:jessie
 
 ADD ./scripts .
-RUN ./scripts/install_docker.sh
+RUN ./install_docker.sh
 RUN apt-get install -y python-pip
 WORKDIR /opt/conduit
 ADD requirements.txt /opt/conduit/requirements.txt
