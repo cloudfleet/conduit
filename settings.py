@@ -1,5 +1,6 @@
 import plugins.users
 import plugins.certificate
+import os
 
 channels = {
     "users": [plugins.users.handle],
