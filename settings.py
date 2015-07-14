@@ -7,5 +7,5 @@ channels = {
     "certificate": [plugins.certificate.handle]
 }
 
-CLOUDFLEET_SECRET = os.get_env("CLOUDFLEET_SECRET")
-CLOUDFLEET_DOMAIN = os.get_env("CLOUDFLEET_DOMAIN")
+CLOUDFLEET_SECRET = os.getenv("CLOUDFLEET_SECRET")
+CLOUDFLEET_DOMAIN = os.getenv("CLOUDFLEET_DOMAIN")
