@@ -10,5 +10,5 @@ def handle(event):
       sys.stdout.write("Response: %s" % r.text)
       if r.status_code == 200:
         with open("/opt/cloudfleet/data/shared/tls/tls_crt.pem.tmp", "w") as fh:
-          fh.write(r.json.cert)
+          fh.write(r.json()["cert"])
         shutil.move("/opt/cloudfleet/data/shared/tls/tls_crt.pem.tmp", "/opt/cloudfleet/data/shared/tls/tls_crt.pem")

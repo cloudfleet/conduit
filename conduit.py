@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, request
 import settings, traceback, getopt, sys, os
 
+
 app = Flask(__name__)
 
 
@@ -9,7 +10,7 @@ def post_message(channel):
     if channel in settings.channels:
         for plugin in settings.channels.get(channel):
             try:
-                plugin(request.json)
+                plugin(request.get_json(force=True))
             except:
                 print traceback.format_exc()
 
